@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="image-placeholder mb-4" style="width: 100%; height: 220px;">
+  <img src="{{ url_for('static', filename='download (1).jpeg') }}" alt="Fitness training banner">
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Members Page</h3>
+  <form method="POST" class="d-flex gap-2">
+    <input type="number" name="member_id" class="form-control form-control-sm" placeholder="Enter Member ID (e.g. 2)" required>
+    <button class="btn btn-sm btn-primary">Load Member</button>
+  </form>
+</div>
+
+{% if member %}
+<div class="card p-3 mb-3">
+  <div class="row align-items-center g-3">
+    <!-- MEMBER PROFILE PHOTO SPACE (130x130px) -->
+    <div class="col-auto">
+      <div class="image-placeholder" style="width: 130px; height: 130px;">
+        <!-- <img src="{{ url_for('static', filename='images/member.jpg') }}" alt="Member Photo"> -->
+        <small>Member Photo<br>(130x130)</small>
+      </div>
+    </div>
+
+    <div class="col">
+      <h5>Welcome, {{ member.name }} (ID: {{ member.member_id }})</h5>
+      <p class="mb-1"><strong>Email:</strong> {{ member.email }} | <strong>Plan:</strong> {{ member.membership_type }} ({{ member.start_date }} to {{ member.end_date }})</p>
+      <p class="mb-2"><strong>Assigned Trainer:</strong> {{ member.trainer_name or "No trainer assigned" }} {% if member.specialization %}({{ member.specialization }}){% endif %}</p>
+      <form method="POST" action="{{ url_for('member_update_email') }}" class="row g-2" style="max-width:420px;">
+        <div class="col-8"><input name="new_email" type="email" class="form-control form-control-sm" placeholder="Update email" required></div>
+        <div class="col-4"><button class="btn btn-sm btn-success w-100">Update Email</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="card p-3 mb-3">
+  <h5>Class Schedule</h5>
+  <table class="table table-bordered table-sm">
+    <thead><tr><th>Class</th><th>Date</th><th>Time</th><th>Venue</th><th>Trainer</th></tr></thead>
+    <tbody>
+      {% for c in classes %}
+      <tr><td>{{ c.class_name }}</td><td>{{ c.class_date }}</td><td>{{ c.class_time }}</td><td>{{ c.venue }}</td><td>{{ c.trainer_name }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card p-3">
+  <h5>My Payments</h5>
+  <table class="table table-bordered table-sm">
+    <thead><tr><th>Payment ID</th><th>Amount</th><th>Date</th><th>Mode</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for p in payments %}
+      <tr><td>{{ p.payment_id }}</td><td>₹{{ p.amount }}</td><td>{{ p.payment_date }}</td><td>{{ p.payment_mode }}</td><td>{{ p.status }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="alert alert-warning">Member ID not found. Try ID 2 or 3.</div>
+{% endif %}
+{% endblock %}
