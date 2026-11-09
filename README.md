@@ -1,5 +1,12 @@
 # Fitness Center Members
 
+## GitHub Pages
+
+The root `index.html` is a static landing page for GitHub Pages. GitHub Pages
+cannot run this project's Flask server or connect to MySQL, so live member
+records are available only when the Flask app is hosted on a Python-capable
+server.
+
 ## Run locally
 
 Install the dependencies:

@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10251d">
+  <meta name="description" content="Fitness Center member portal and membership dashboard.">
+  <title>Members | Fitness Center</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #17241d;
+      background: #f5f7f4;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; }
+    a { color: inherit; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 76px;
+      padding: 0 clamp(20px, 6vw, 88px);
+      color: #fff;
+      background: #10251d;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 17px;
+      font-weight: 750;
+      text-decoration: none;
+      letter-spacing: -.03em;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border-radius: 11px;
+      color: #10251d;
+      background: #b7ee76;
+      font-size: 17px;
+    }
+
+    .topbar-link {
+      color: #e0e9e3;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    main {
+      width: min(1120px, calc(100% - 40px));
+      margin: 44px auto 72px;
+    }
+
+    .hero {
+      position: relative;
+      display: flex;
+      min-height: 270px;
+      align-items: end;
+      overflow: hidden;
+      padding: clamp(24px, 5vw, 48px);
+      border-radius: 20px;
+      color: #fff;
+      background: #254032 url("./static/download%20(1).jpeg") center 48% / cover no-repeat;
+      isolation: isolate;
+    }
+
+    .hero::before {
+      position: absolute;
+      z-index: -1;
+      background: linear-gradient(90deg, rgb(9 26 19 / 86%), rgb(9 26 19 / 20%));
+      content: "";
+      inset: 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #c6f396;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 600px;
+      margin: 0;
+      font-size: clamp(34px, 6vw, 54px);
+      line-height: 1.06;
+      letter-spacing: -.055em;
+    }
+
+    .hero-copy {
+      max-width: 480px;
+      margin: 14px 0 0;
+      color: #e5eee7;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin: 38px 0 18px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 23px;
+      letter-spacing: -.04em;
+    }
+
+    .section-heading p {
+      margin: 6px 0 0;
+      color: #69766d;
+      font-size: 14px;
+    }
+
+    .status {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 22px;
+      border: 1px solid #d5e6d9;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 8px 26px rgb(23 36 29 / 4%);
+    }
+
+    .status-icon {
+      display: grid;
+      flex: 0 0 38px;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border-radius: 12px;
+      color: #315d3b;
+      background: #e8f4e5;
+      font-size: 17px;
+    }
+
+    .status h3 {
+      margin: 1px 0 6px;
+      font-size: 16px;
+      letter-spacing: -.02em;
+    }
+
+    .status p {
+      margin: 0;
+      color: #59665d;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .status a {
+      color: #315d3b;
+      font-weight: 700;
+      text-underline-offset: 3px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .feature {
+      min-height: 130px;
+      padding: 20px;
+      border: 1px solid #e4e9e4;
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .feature-icon {
+      display: block;
+      margin-bottom: 14px;
+      font-size: 21px;
+    }
+
+    .feature h3 {
+      margin: 0 0 5px;
+      font-size: 15px;
+    }
+
+    .feature p {
+      margin: 0;
+      color: #69766d;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    footer {
+      margin-top: 34px;
+      color: #758078;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 700px) {
+      main { margin-top: 24px; }
+      .hero { min-height: 250px; }
+      .features { grid-template-columns: 1fr; }
+      .section-heading { align-items: start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./">
+      <span class="brand-mark" aria-hidden="true">+</span>
+      <span>Fitness Center</span>
+    </a>
+    <a class="topbar-link" href="https://github.com/krishna-code-245/members">Project on GitHub</a>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">Move well. Feel stronger.</p>
+        <h1 id="page-title">Your membership, all in one place.</h1>
+        <p class="hero-copy">Welcome to the Fitness Center member portal. Find your membership, class schedule, and payment details in one simple dashboard.</p>
+      </div>
+    </section>
+
+    <section aria-labelledby="dashboard-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="dashboard-title">Members dashboard</h2>
+          <p>Your membership information will appear here.</p>
+        </div>
+      </div>
+
+      <div class="status" role="status">
+        <span class="status-icon" aria-hidden="true">i</span>
+        <div>
+          <h3>Member records need the app server</h3>
+          <p>This page is hosted on GitHub Pages, which serves static files and cannot run the Flask app or connect to its MySQL database. To load live member records, run the app with MySQL using the <a href="https://github.com/krishna-code-245/members#run-locally">setup instructions</a>.</p>
+        </div>
+      </div>
+
+      <div class="features" aria-label="Member portal features">
+        <article class="feature">
+          <span class="feature-icon" aria-hidden="true">◉</span>
+          <h3>Membership profile</h3>
+          <p>View your plan, membership dates, and assigned trainer.</p>
+        </article>
+        <article class="feature">
+          <span class="feature-icon" aria-hidden="true">▦</span>
+          <h3>Class schedule</h3>
+          <p>Check upcoming classes, times, venues, and trainers.</p>
+        </article>
+        <article class="feature">
+          <span class="feature-icon" aria-hidden="true">↗</span>
+          <h3>Payment history</h3>
+          <p>Review your membership payments and their status.</p>
+        </article>
+      </div>
+    </section>
+
+    <footer>Fitness Center Member Portal</footer>
+  </main>
+</body>
+</html>
