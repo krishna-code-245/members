@@ -1,18 +1,22 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
-import mysql.connector
 import os
-app = Flask(__name__)
-app.secret_key = os.environ["FLASK_SECRET_KEY"]
+import secrets
+
+import mysql.connector
+from flask import Flask, flash, redirect, render_template, request, session, url_for
+
+app = Flask(__name__, static_folder="static", static_url_path="/static")
+app.secret_key = os.environ.get("FLASK_SECRET_KEY") or secrets.token_hex(32)
+
 
 def get_db_connection():
     return mysql.connector.connect(
-        host="localhost",
-        user="root",          # Replace with your MySQL username
-        password=os.environ["DB_PASSWORD"],
-        database="fitness_center"
+        host=os.environ.get("DB_HOST", "localhost"),
+        user=os.environ.get("DB_USER", "root"),
+        password=os.environ.get("DB_PASSWORD", ""),
+        database=os.environ.get("DB_NAME", "fitness_center"),
     )
 
-# ==================== PAGE 1: MEMBERS (FIRST PAGE) ====================
+
 @app.route("/", methods=["GET", "POST"])
 @app.route("/members", methods=["GET", "POST"])
 def members_page():
@@ -21,30 +25,49 @@ def members_page():
         return redirect(url_for("members_page"))
 
     member_id = session.get("member_id", 2)
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("""
-        SELECT m.*, t.name AS trainer_name, t.specialization
-        FROM Members m
-        LEFT JOIN Trainers t ON m.trainer_id = t.trainer_id
-        WHERE m.member_id = %s
-    """, (member_id,))
-    member = cursor.fetchone()
+        cursor.execute("""
+            SELECT m.*, t.name AS trainer_name, t.specialization
+            FROM Members m
+            LEFT JOIN Trainers t ON m.trainer_id = t.trainer_id
+            WHERE m.member_id = %s
+        """, (member_id,))
+        member = cursor.fetchone()
 
-    cursor.execute("""
-        SELECT c.*, t.name AS trainer_name
-        FROM Classes c
-        LEFT JOIN Trainers t ON c.trainer_id = t.trainer_id
-    """)
-    classes = cursor.fetchall()
+        cursor.execute("""
+            SELECT c.*, t.name AS trainer_name
+            FROM Classes c
+            LEFT JOIN Trainers t ON c.trainer_id = t.trainer_id
+        """)
+        classes = cursor.fetchall()
 
-    cursor.execute("SELECT * FROM Payments WHERE member_id = %s", (member_id,))
-    payments = cursor.fetchall()
+        cursor.execute("SELECT * FROM Payments WHERE member_id = %s", (member_id,))
+        payments = cursor.fetchall()
+    except mysql.connector.Error:
+        app.logger.exception("Unable to load member data from MySQL")
+        return render_template(
+            "members.html",
+            member=None,
+            classes=[],
+            payments=[],
+            database_error=(
+                "Member data is unavailable. Check that MySQL is running and "
+                "the fitness_center database is configured."
+            ),
+        ), 503
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if conn is not None:
+            conn.close()
 
-    cursor.close()
-    conn.close()
     return render_template("members.html", member=member, classes=classes, payments=payments)
+
 
 @app.route("/members/update_email", methods=["POST"])
 def member_update_email():
@@ -60,3 +83,7 @@ def member_update_email():
     conn.close()
     flash("Member email updated successfully!", "success")
     return redirect(url_for("members_page"))
+
+
+if __name__ == "__main__":
+    app.run(host="127.0.0.1", port=5000)

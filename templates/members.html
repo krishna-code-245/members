@@ -59,6 +59,8 @@
     </tbody>
   </table>
 </div>
+{% elif database_error %}
+<div class="alert alert-warning">{{ database_error }}</div>
 {% else %}
 <div class="alert alert-warning">Member ID not found. Try ID 2 or 3.</div>
 {% endif %}
